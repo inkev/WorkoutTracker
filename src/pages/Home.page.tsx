@@ -1,11 +1,13 @@
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { Welcome } from '../components/Welcome/Welcome';
+import { MantineProvider } from '@mantine/core';
+import HomePage from "../components/HomePage/HomePage";
 
-export function HomePage() {
+export function Home() {
   return (
     <>
-      <Welcome />
-      <ColorSchemeToggle />
+      <MantineProvider defaultColorScheme = 'dark'>
+          <HomePage />
+      </MantineProvider>
     </>
   );
 }

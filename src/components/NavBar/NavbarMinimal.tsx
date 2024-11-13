@@ -1,73 +1,66 @@
-import { useState } from 'react';
-import { Center, Tooltip, UnstyledButton, Stack, rem } from '@mantine/core';
+import { Center, Tooltip, Stack, rem, UnstyledButton } from '@mantine/core';
 import {
   IconHome2,
   IconGauge,
   IconDeviceDesktopAnalytics,
-  IconFingerprint,
-  IconCalendarStats,
-  IconUser,
-  IconSettings,
-  IconLogout,
-  IconSwitchHorizontal,
 } from '@tabler/icons-react';
 import classes from './NavbarMinimal.module.css';
+import { NavLink } from 'react-router-dom'
+import { useState } from 'react';
 
 interface NavbarLinkProps {
   icon: typeof IconHome2;
   label: string;
-  active?: boolean;
+  active?: boolean
+  to: string;
   onClick?(): void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
-        <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
-      </UnstyledButton>
+      <NavLink to={to}>
+        <UnstyledButton onClick = {onClick} className={classes.link} data-active = {active || undefined}>
+          <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
+          <span>{label}</span>
+        </UnstyledButton>
+      </NavLink>
     </Tooltip>
   );
 }
 
-const mockdata = [
-  { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Dashboard' },
-  { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-  { icon: IconCalendarStats, label: 'Releases' },
-  { icon: IconUser, label: 'Account' },
-  { icon: IconFingerprint, label: 'Security' },
-  { icon: IconSettings, label: 'Settings' },
+const sideBarComponent = [
+  { icon: IconHome2, label: 'Home', path: '/home' },
+  { icon: IconGauge, label: 'Create Workout', path: '/create-workout' },
+  { icon: IconDeviceDesktopAnalytics, label: 'Current Workout', path: '/current-workout' }
 ];
 
-export function NavbarMinimal() {
-  const [active, setActive] = useState(2);
+const NavbarMinimal = ()  => {
+  const [active, setActive] = useState(1)
 
-  const links = mockdata.map((link, index) => (
+  const links = sideBarComponent.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
-      active={index === active}
+      active = {index === active}
       onClick={() => setActive(index)}
+      to = {link.path}
     />
   ));
-
+  
   return (
     <nav className={classes.navbar}>
       <Center>
         <IconHome2 type="mark" size={30} />
       </Center>
-
+  
       <div className={classes.navbarMain}>
         <Stack justify="center" gap={0}>
           {links}
         </Stack>
       </div>
-
-      <Stack justify="center" gap={0}>
-        <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
-        <NavbarLink icon={IconLogout} label="Logout" />
-      </Stack>
     </nav>
   );
 }
+
+export default NavbarMinimal

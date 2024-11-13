@@ -20,10 +20,13 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
-    "@mantine/core": "7.13.4",
-    "@mantine/hooks": "7.13.4",
+    "@mantine/core": "^7.14.0",
+    "@mantine/hooks": "^7.14.0",
     "@tabler/icons-react": "^3.21.0",
+    "@types/react-router": "^5.1.20",
+    "dayjs": "^1.11.13",
     "react": "^18.3.1",
+    "react-calendar": "^5.1.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0"
   },
