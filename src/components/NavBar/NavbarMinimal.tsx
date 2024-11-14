@@ -20,7 +20,7 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <NavLink to={to}>
-        <UnstyledButton onClick = {onClick} className={classes.link} data-active = {active || undefined}>
+        <UnstyledButton onClick={onClick} className={classes.link} data-active={active || undefined}>
           <Icon style={{ width: rem(20), height: rem(20) }} stroke={1.5} />
           <span>{label}</span>
         </UnstyledButton>
@@ -30,30 +30,30 @@ function NavbarLink({ icon: Icon, label, active, onClick, to }: NavbarLinkProps)
 }
 
 const sideBarComponent = [
-  { icon: IconHome2, label: 'Home', path: '/home' },
+  { icon: IconHome2, label: 'Home', path: '' },
   { icon: IconGauge, label: 'Create Workout', path: '/create-workout' },
   { icon: IconDeviceDesktopAnalytics, label: 'Current Workout', path: '/current-workout' }
 ];
 
-const NavbarMinimal = ()  => {
-  const [active, setActive] = useState(1)
+const NavbarMinimal = () => {
+  const [active, setActive] = useState(0)
 
   const links = sideBarComponent.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
-      active = {index === active}
+      active={index === active}
       onClick={() => setActive(index)}
-      to = {link.path}
+      to={link.path}
     />
   ));
-  
+
   return (
     <nav className={classes.navbar}>
       <Center>
         <IconHome2 type="mark" size={30} />
       </Center>
-  
+
       <div className={classes.navbarMain}>
         <Stack justify="center" gap={0}>
           {links}

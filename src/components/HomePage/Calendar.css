@@ -34,7 +34,7 @@ body {
   padding: 10px;
 }
 
-.Sample__container > * > * {
+.Sample__container>*>* {
   margin: 10px;
 }
 
@@ -50,5 +50,5 @@ body {
 
 .Sample__container__content .react-calendar {
   margin: 0 auto;
-  background-color:rgba(3, 3, 3, 0.5)
+  background-color: rgba(3, 3, 3, 0.5)
 }

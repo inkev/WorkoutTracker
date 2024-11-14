@@ -1,34 +1,34 @@
 import '@mantine/core/styles.css';
-
-import { MantineProvider } from '@mantine/core';
-import { Router } from './Router';
+import { MantineProvider, useMantineColorScheme } from '@mantine/core';
 import { theme } from './theme';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
-import Root from "./pages/root.jsx"
-import { Home } from './pages/Home.page';
+import Root from './pages/root.jsx';
+import HomePage from './components/HomePage/HomePage';
+import CreatePage from './components/CreatePage/CreatePage'
 
 
 function App() {
-  const router = createBrowserRouter(createRoutesFromElements (
-    <Route path ="/" element = {<Root />}>
+  const router = createBrowserRouter(createRoutesFromElements(
+    <Route path="/" element={<Root />}>
       <Route
-        path = "home"
-        element={<Home />}
-      />      
+        path=""
+        element={<HomePage />}
+      />
       <Route
-        path = "create-workout"
-        element={<Home />}
-      />      
+        path="create-workout"
+        element={<CreatePage />}
+      />
       <Route
-        path = "current-workout"
-        element={<Home />}
+        path="current-workout"
+        element={<HomePage />}
       />
     </Route>
+
   ))
   return (
-      <MantineProvider theme={theme}>
-        <RouterProvider router = {router} />
-      </MantineProvider>
+    <MantineProvider theme={theme} defaultColorScheme='dark'>
+      <RouterProvider router={router} />
+    </MantineProvider>
   );
 }
 
