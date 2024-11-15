@@ -14,7 +14,7 @@
 }
 
 .symbol {
-    font-size: rem(30px);
+    font-size: rem(15px);
     font-weight: 700;
     width: rem(60px);
 }
@@ -27,4 +27,16 @@
     color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-1));
     padding-left: var(--mantine-spacing-md);
     padding-right: var(--mantine-spacing-md);
+}
+
+.rowC {
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    column-gap: 20px;
+}
+
+.droppableC{
+    background-color: light-dark(var(--mantine-color-white), var(--mantine-color-dark-3));
+    border-radius: var(--mantine-radius-md);
 }
