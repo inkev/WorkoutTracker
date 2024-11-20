@@ -9,6 +9,7 @@ function CreatePage() {
 
     return (
         <div className={classes.rowC}>
+            <TableComponent />
             <DraggableComponent />
         </div>
     );

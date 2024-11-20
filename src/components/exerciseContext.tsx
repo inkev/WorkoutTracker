@@ -1,5 +1,6 @@
 import { object } from 'prop-types';
-import React, {createContext, SetStateAction} from 'react';
+import React, {createContext, SetStateAction, useState} from 'react';
+import db from '../db/statements.js'
 
 type FetchPreviousWorkoutByDate = (date:string) => object;
 type FetchWorkoutByName = (name:string) => object;
@@ -12,12 +13,18 @@ type exercise = {
     rpe: string
 }
 
+type workout = {
+    name: string,
+    exercises: exercise[]
+}
+
 type WorkoutDetails = {
     fetchPreviousWorkoutByDate: FetchPreviousWorkoutByDate;
     fetchWorkoutByName: FetchWorkoutByName;
     allExercises: exercise[];
     setExerciseSetsAndReps: SetExerciseSetsAndReps;
-}
+    currentWorkoutList: workout;
+};
 
 const allExercises: exercise[] = [
     {name: "Incline Dumbell Curls",
@@ -30,12 +37,21 @@ const allExercises: exercise[] = [
     reps: "8",
     rpe: "10"
     }
-]
+];
+
+const currentWorkout: workout = {
+    name: "test",
+    exercises: allExercises
+}
+const allWorkouts: workout[] = [];
 
 export const WorkoutContext = createContext<WorkoutDetails | undefined>(undefined)
 type ExerciseProviderProp = {children:React.ReactNode}
 
 const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.ReactElement => {
+    const [currentWorkoutList, setCurrentWorkoutList] = useState<workout>(currentWorkout);
+    const [allExerciseList, setAllExerciseList] = useState<workout[] | undefined> (db.getExercises)
+
     function fetchPreviousWorkoutByDate(date:string) {
         return allExercises;
     }
@@ -53,10 +69,16 @@ const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.Reac
         }
     }
 
+    function setCurrentWorkout (workout) {
+        setCurrentWorkoutList(workout)
+    }
 
+    function addExerciseList() {
+        
+    }
 
     return(
-        <WorkoutContext.Provider value ={{fetchPreviousWorkoutByDate, fetchWorkoutByName, allExercises, setExerciseSetsAndReps}}>{children}</WorkoutContext.Provider>
+        <WorkoutContext.Provider value ={{fetchPreviousWorkoutByDate, fetchWorkoutByName, allExercises, setExerciseSetsAndReps, currentWorkoutList}}>{children}</WorkoutContext.Provider>
     );
 }
 

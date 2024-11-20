@@ -1,13 +1,11 @@
 import cx from 'clsx';
-import { rem, Text, ScrollArea, Box, UnstyledButton, NumberInput, TextInput } from '@mantine/core';
+import { rem, Text, ScrollArea, Box, NumberInput} from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import { IconGripVertical } from '@tabler/icons-react';
 import classes from './DndListHandle.module.css'
-import React, { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { WorkoutContext } from '../exerciseContext'
-import { readValue } from '@mantine/hooks/lib/use-local-storage/create-storage';
-import { number } from 'prop-types';
 
 
 
@@ -29,7 +27,7 @@ let data = [
 
 function DraggableComponent() {
     const ContExercise = useContext(WorkoutContext);
-    const [state, handlers] = useListState(ContExercise ? ContExercise.allExercises : data);
+    const [state, handlers] = useListState(ContExercise ? ContExercise.currentWorkoutList.exercises : data);
 
     const items = state.map((item, index) => (
         <Draggable key={item.name} index={index} draggableId={item.name}>
@@ -48,7 +46,6 @@ function DraggableComponent() {
                             <NumberInput id={"sets"} label="Sets: " defaultValue={item.sets} onChange={event => item.sets = event.toString()} />
                             <NumberInput id={"reps"} label="Reps: " defaultValue={item.reps} onChange={event => item.reps = event.toString()} />
                         </div>
-                        <Text>{item.sets}</Text>
                     </div>
                 </div>
             )}
