@@ -1,5 +1,5 @@
 CREATE TABLE exercises (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     sets TEXT,
     reps TEXT,
@@ -7,6 +7,10 @@ CREATE TABLE exercises (
 )
 
 INSERT INTO exercises (name, sets, reps, rpe)
-VALUES ("Squats", "3", "8", "10")
+VALUES ("Preacher Curls", "3", "12", "10")
+
+DELETE FROM exercises WHERE id = 2
 
 DROP TABLE exercises
+
+SELECT * FROM exercises

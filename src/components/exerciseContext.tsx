@@ -1,12 +1,12 @@
 import { object } from 'prop-types';
 import React, {createContext, SetStateAction, useState} from 'react';
-import db from '../db/statements.js'
 
 type FetchPreviousWorkoutByDate = (date:string) => object;
 type FetchWorkoutByName = (name:string) => object;
-type SetExerciseSetsAndReps = (name:string, sets:string, reps:string) => void;
+type SetExerciseSetsAndReps = (name:string, sets:string, reps:string, rpe:string) => void;
 
 type exercise = {
+    id: number
     name: string,
     sets: string,
     reps: string,
@@ -19,55 +19,37 @@ type workout = {
 }
 
 type WorkoutDetails = {
-    fetchPreviousWorkoutByDate: FetchPreviousWorkoutByDate;
-    fetchWorkoutByName: FetchWorkoutByName;
-    allExercises: exercise[];
-    setExerciseSetsAndReps: SetExerciseSetsAndReps;
+    allExerciseList: exercise[];
     currentWorkoutList: workout;
 };
+const allWorkouts: workout = {
+    name: "yes",
+    exercises: [{
+        id: 1,
+        name: "1",
+        sets: "2",
+        reps: "2",
+        rpe: "2"
 
-const allExercises: exercise[] = [
-    {name: "Incline Dumbell Curls",
-    sets: "3", 
-    reps: "12",
-    rpe: "10"},
+    }]
+};
 
-    {name: "Squat",
-    sets: "3",
-    reps: "8",
-    rpe: "10"
-    }
-];
+const exerciseList: exercise[] = [{
+    id: 1,
+    name: "1",
+    sets: "2",
+    reps: "2",
+    rpe: "2"
 
-const currentWorkout: workout = {
-    name: "test",
-    exercises: allExercises
-}
-const allWorkouts: workout[] = [];
+}]
+
 
 export const WorkoutContext = createContext<WorkoutDetails | undefined>(undefined)
 type ExerciseProviderProp = {children:React.ReactNode}
 
 const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.ReactElement => {
-    const [currentWorkoutList, setCurrentWorkoutList] = useState<workout>(currentWorkout);
-    const [allExerciseList, setAllExerciseList] = useState<workout[] | undefined> (db.getExercises)
-
-    function fetchPreviousWorkoutByDate(date:string) {
-        return allExercises;
-    }
-
-    function fetchWorkoutByName(name:string) {
-        return allExercises;
-    }
-
-    function setExerciseSetsAndReps (name:string, sets:string, reps:string) {
-        for(let i = 0; i < allExercises.length; i++) {
-            if(name == allExercises[i].name) {
-                allExercises[i].sets = sets;
-                allExercises[i].reps = reps;
-            }
-        }
-    }
+    const [currentWorkoutList, setCurrentWorkoutList] = useState<workout>(allWorkouts);
+    const [allExerciseList, setAllExerciseList] = useState<exercise[]> (exerciseList)
 
     function setCurrentWorkout (workout) {
         setCurrentWorkoutList(workout)
@@ -78,10 +60,8 @@ const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.Reac
     }
 
     return(
-        <WorkoutContext.Provider value ={{fetchPreviousWorkoutByDate, fetchWorkoutByName, allExercises, setExerciseSetsAndReps, currentWorkoutList}}>{children}</WorkoutContext.Provider>
+        <WorkoutContext.Provider value ={{allExerciseList, currentWorkoutList}}>{children}</WorkoutContext.Provider>
     );
 }
-
-
 
 export default WorkoutProvider
