@@ -2,12 +2,18 @@ const { Model, DataTypes } = require('sequelize');
 
 const sequelize = require('./database')
 
-class Exercise extends Model { }
+class Exercises extends Model { }
 
-Exercise.init({
-    name: {
+Exercises.init({
+    exerciseID: {
         type: DataTypes.STRING,
-        allowNULL: false
+        allowNULL: false,
+        unique: true
+    },
+    exerciseName: {
+        type: DataTypes.STRING,
+        allowNULL: false,
+        unique: true
     },
     sets: {
         type: DataTypes.STRING,
@@ -16,14 +22,11 @@ Exercise.init({
     reps: {
         type: DataTypes.STRING,
         allowNULL: false
-    },
-    rpe: {
-        type: DataTypes.STRING
     }
 }, {
     sequelize,
-    modelName: 'exercise',
+    modelName: 'exercises',
     timestamps: false
 })
 
-module.exports = Exercise;
+module.exports = Exercises;
