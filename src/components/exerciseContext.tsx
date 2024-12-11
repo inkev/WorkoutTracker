@@ -1,46 +1,54 @@
-import { object } from 'prop-types';
-import React, {createContext, SetStateAction, useState} from 'react';
+import axios from 'axios';
+import React, {createContext, useEffect, useState} from 'react';
+import { useQuery } from "@tanstack/react-query";
 
-type FetchPreviousWorkoutByDate = (date:string) => object;
-type FetchWorkoutByName = (name:string) => object;
-type SetExerciseSetsAndReps = (name:string, sets:string, reps:string, rpe:string) => void;
+const API_BASE_URL = 'http://localhost:3000'
 
-type exercise = {
-    id: number
-    name: string,
+type FetchAllExercises = () => Promise<exercise[]>;
+type InsertToAllExercise = (exercise: exercise) => object;
+
+type workoutExercise = {
+    exerciseID: string,
+    exerciseName: string,
     sets: string,
     reps: string,
-    rpe: string
+    workoutId: number
+}
+
+type exercise = {
+    exerciseID: string,
+    exerciseName: string,
+    sets: string,
+    reps: string
 }
 
 type workout = {
     name: string,
-    exercises: exercise[]
+    exercises: workoutExercise[]
 }
 
 type WorkoutDetails = {
     allExerciseList: exercise[];
+    fetchAllExercises: FetchAllExercises;
+    insertToAllExercise: InsertToAllExercise;
     currentWorkoutList: workout;
 };
 const allWorkouts: workout = {
     name: "yes",
     exercises: [{
-        id: 1,
-        name: "1",
+        exerciseID: "1",
+        exerciseName: "1",
         sets: "2",
         reps: "2",
-        rpe: "2"
-
+        workoutId: 2
     }]
 };
 
 const exerciseList: exercise[] = [{
-    id: 1,
-    name: "1",
+    exerciseID: "1",
+    exerciseName: "1",
     sets: "2",
     reps: "2",
-    rpe: "2"
-
 }]
 
 
@@ -49,18 +57,49 @@ type ExerciseProviderProp = {children:React.ReactNode}
 
 const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.ReactElement => {
     const [currentWorkoutList, setCurrentWorkoutList] = useState<workout>(allWorkouts);
-    const [allExerciseList, setAllExerciseList] = useState<exercise[]> (exerciseList)
+    const [allExerciseList, setAllExerciseList] = useState<exercise[]> ([]);
 
-    function setCurrentWorkout (workout) {
-        setCurrentWorkoutList(workout)
+    async function fetchAllExercises(): Promise<exercise[]> {
+        try {
+            console.log("Making API call...")
+            const response = await axios.get('http://localhost:3000/exercises', {
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            setAllExerciseList(response.data);
+            console.log("API response: ", response.data)
+            return allExerciseList;
+
+        } catch(error) {
+            console.error('Error grabbing exercise list', error)
+            throw error
+        }
     }
 
-    function addExerciseList() {
-        
+    const { isError, isLoading, data } = useQuery(
+        ['allExerciseList'],
+        () => fetchAllExercises()
+    );
+
+    useEffect(() => {
+        console.log("Fetching Exercises... ");
+        fetchAllExercises();
+    }, []);
+
+    async function insertToAllExercise(exercise: exercise) {
+        try {
+            axios.post(`http://localhost:3000/exercises`, {
+                exercise
+            });
+        } catch(error) {
+            console.error('Error inserting to list', error)
+            throw error
+        }
     }
 
     return(
-        <WorkoutContext.Provider value ={{allExerciseList, currentWorkoutList}}>{children}</WorkoutContext.Provider>
+        <WorkoutContext.Provider value ={{fetchAllExercises, insertToAllExercise, allExerciseList, currentWorkoutList}}>{children}</WorkoutContext.Provider>
     );
 }
 

@@ -13,12 +13,13 @@ import {
 import { IconSelector, IconChevronDown, IconChevronUp, IconSearch } from '@tabler/icons-react';
 import classes from './TableComponent.module.css';
 import { WorkoutContext } from '../exerciseContext';
+import { useQuery } from "@tanstack/react-query";
 
 interface RowData {
-  name: string;
+  exerciseID: string;
+  exerciseName: string;
   reps: string;
   sets: string;
-  rpe: string;
 }
 
 interface ThProps {
@@ -49,7 +50,7 @@ function Th({ children, reversed, sorted, onSort }: ThProps) {
 function filterData(data: RowData[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => item[key].toString().toLowerCase().includes(query))
   );
 }
 
@@ -65,42 +66,25 @@ function sortData(
 
   return filterData(
     [...data].sort((a, b) => {
+      const valueA = a[sortBy]?.toString() ?? "";
+      const valueB = b[sortBy]?.toString() ?? "";
       if (payload.reversed) {
-        return b[sortBy].localeCompare(a[sortBy]);
+        return valueB.localeCompare(valueA);
       }
 
-      return a[sortBy].localeCompare(b[sortBy]);
+      return valueA.localeCompare(valueA);
     }),
     payload.search
   );
 }
 
-const data = [
-  {
-    name: "Incline Dumbell Curls",
-    sets: "3",
-    reps: "12",
-    rpe: "10"
-  },
-
-  {
-    name: "Squat",
-    sets: "3",
-    reps: "8",
-    rpe: "10"
-  }
-]
-
-function addData(dataPoint) {
-
-}
-
 function TableComponent() {
   const [search, setSearch] = useState('');
-  const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const ContExercise = useContext(WorkoutContext)
+  const ContExercise = useContext(WorkoutContext);
+  const data = ContExercise?.allExerciseList ?? [];
+  const [sortedData, setSortedData] = useState(data);
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -115,9 +99,9 @@ function TableComponent() {
     setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
-  const rows = sortedData.map((row) => (
-    <Table.Tr key={row.name}>
-      <Table.Td>{row.name}</Table.Td>
+  const rows = sortedData?.map((row) => (
+    <Table.Tr key={row.exerciseName}>
+      <Table.Td>{row.exerciseName}</Table.Td>
       <Table.Td>{row.sets} {row.reps}</Table.Td>
       <Table.Td>Add Exercise</Table.Td>
     </Table.Tr>
@@ -136,9 +120,9 @@ function TableComponent() {
         <Table.Tbody>
           <Table.Tr className={classes.item}>
             <Th
-              sorted={sortBy === 'name'}
+              sorted={sortBy === 'exerciseName'}
               reversed={reverseSortDirection}
-              onSort={() => setSorting('name')}
+              onSort={() => setSorting('exerciseName')}
             >
               Exercise Name
             </Th>
@@ -152,7 +136,7 @@ function TableComponent() {
             rows
           ) : (
             <Table.Tr className={classes.item}>
-              <Table.Td colSpan={Object.keys(data[0]).length}>
+              <Table.Td colSpan={data?.[0] ? Object.keys(data[0]).length : 1}>
                 <Text fw={500} ta="center">
                   Nothing found
                 </Text>

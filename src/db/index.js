@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const sequelize = require('./database');
 const Exercises = require('./Exercises');
 const workoutExercises = require('./workoutExercises');
@@ -18,15 +19,11 @@ DailyTracker.belongsTo(CalendarData, {
     }
 })
 
-DailyTracker.hasOne(Exercises, {
-    foreignKey: {
-        name: 'exerciseID'
-    }
-})
-
 sequelize.sync().then(() => console.log('db is ready'));
 
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 
