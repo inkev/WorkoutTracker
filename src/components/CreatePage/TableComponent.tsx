@@ -83,9 +83,18 @@ function TableComponent() {
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const ContExercise = useContext(WorkoutContext);
-  const data = ContExercise?.allExerciseList ?? [];
+
+  const { isError, isLoading, data } = useQuery({
+    queryFn: () => ContExercise.fetchAllExercises(),
+    queryKey: ["allExerciseList"],
+    initialData: []
+  });
   const [sortedData, setSortedData] = useState(data);
 
+  if (isLoading) {
+    return <Text>Loading...</Text>
+  }
+  
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);

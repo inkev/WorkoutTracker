@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React, {createContext, useEffect, useState} from 'react';
-import { useQuery } from "@tanstack/react-query";
 
 const API_BASE_URL = 'http://localhost:3000'
 
@@ -52,7 +51,7 @@ const exerciseList: exercise[] = [{
 }]
 
 
-export const WorkoutContext = createContext<WorkoutDetails | undefined>(undefined)
+export const WorkoutContext = createContext<WorkoutDetails>(undefined!)
 type ExerciseProviderProp = {children:React.ReactNode}
 
 const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.ReactElement => {
@@ -76,11 +75,6 @@ const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.Reac
             throw error
         }
     }
-
-    const { isError, isLoading, data } = useQuery(
-        ['allExerciseList'],
-        () => fetchAllExercises()
-    );
 
     useEffect(() => {
         console.log("Fetching Exercises... ");
