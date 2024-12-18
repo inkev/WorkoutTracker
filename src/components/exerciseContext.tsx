@@ -27,7 +27,6 @@ type workout = {
 }
 
 type WorkoutDetails = {
-    allExerciseList: exercise[];
     fetchAllExercises: FetchAllExercises;
     insertToAllExercise: InsertToAllExercise;
     currentWorkoutList: workout;
@@ -56,7 +55,6 @@ type ExerciseProviderProp = {children:React.ReactNode}
 
 const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.ReactElement => {
     const [currentWorkoutList, setCurrentWorkoutList] = useState<workout>(allWorkouts);
-    const [allExerciseList, setAllExerciseList] = useState<exercise[]> ([]);
 
     async function fetchAllExercises(): Promise<exercise[]> {
         try {
@@ -66,9 +64,8 @@ const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.Reac
                     "Content-Type": "application/json",
                 }
             })
-            setAllExerciseList(response.data);
             console.log("API response: ", response.data)
-            return allExerciseList;
+            return response.data;
 
         } catch(error) {
             console.error('Error grabbing exercise list', error)
@@ -93,7 +90,7 @@ const WorkoutProvider: React.FC<ExerciseProviderProp> = ({children}): React.Reac
     }
 
     return(
-        <WorkoutContext.Provider value ={{fetchAllExercises, insertToAllExercise, allExerciseList, currentWorkoutList}}>{children}</WorkoutContext.Provider>
+        <WorkoutContext.Provider value ={{fetchAllExercises, insertToAllExercise, currentWorkoutList}}>{children}</WorkoutContext.Provider>
     );
 }
 

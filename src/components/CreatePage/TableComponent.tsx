@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useMemo } from 'react';
 import {
   Table,
   ScrollArea,
@@ -84,34 +84,34 @@ function TableComponent() {
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const ContExercise = useContext(WorkoutContext);
 
-  const { isError, isLoading, data } = useQuery({
+  const { isLoading, data } = useQuery({
     queryFn: () => ContExercise.fetchAllExercises(),
     queryKey: ["allExerciseList"],
     initialData: []
   });
-  const [sortedData, setSortedData] = useState(data);
 
   if (isLoading) {
     return <Text>Loading...</Text>
   }
-  
+
+  const sortedData = useMemo(() => {
+    return sortData(data, {sortBy, reversed: reverseSortDirection, search });
+  }, [data, sortBy, reverseSortDirection, search])
+
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
   const rows = sortedData?.map((row) => (
     <Table.Tr key={row.exerciseName}>
       <Table.Td>{row.exerciseName}</Table.Td>
-      <Table.Td>{row.sets} {row.reps}</Table.Td>
       <Table.Td>Add Exercise</Table.Td>
     </Table.Tr>
   ));
@@ -147,7 +147,7 @@ function TableComponent() {
             <Table.Tr className={classes.item}>
               <Table.Td colSpan={data?.[0] ? Object.keys(data[0]).length : 1}>
                 <Text fw={500} ta="center">
-                  Nothing found
+                  Loading
                 </Text>
               </Table.Td>
             </Table.Tr>
